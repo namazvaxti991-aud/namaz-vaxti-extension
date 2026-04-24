@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8"/>
+<title>Namaz Vaxtı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  width:340px;
+  font-family:'Nunito',sans-serif;
+  background:#f4f3ee;
+  color:#1a1a1a;
+  font-size:13px;
+}
+
+/* ─────────────────────────────────────────────
+   HEADER
+───────────────────────────────────────────── */
+.hdr{
+  background:linear-gradient(145deg,#196128 0%,#0d3d18 100%);
+  padding:12px 14px 11px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* subtle pattern overlay */
+.hdr::before{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at top right,rgba(255,255,255,.08) 0%,transparent 65%);
+  pointer-events:none;
+}
+
+/* top row: logo + name + clock */
+.hdr-top{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px;
+  position:relative;
+}
+
+.brand{display:flex;align-items:center;gap:9px;}
+
+/* icon wrapper — white circle behind icon */
+.icon-ring{
+  width:34px;height:34px;border-radius:50%;
+  background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 2px rgba(255,255,255,.35),0 2px 6px rgba(0,0,0,.25);
+  flex-shrink:0;overflow:hidden;
+}
+.icon-ring img{width:26px;height:26px;object-fit:contain;}
+
+.brand-txt .name{
+  color:#fff;font-size:15px;font-weight:800;
+  letter-spacing:.2px;line-height:1.15;
+}
+.brand-txt .url{
+  color:rgba(255,255,255,.48);font-size:9.5px;
+  font-weight:600;letter-spacing:.3px;
+}
+
+.clock{
+  color:rgba(255,255,255,.85);
+  font-size:12px;font-weight:700;
+  font-variant-numeric:tabular-nums;
+  background:rgba(0,0,0,.18);
+  padding:3px 8px;border-radius:12px;
+}
+
+/* city selector */
+.city-wrap{position:relative;margin-bottom:9px;}
+.city-sel{
+  width:100%;
+  background:rgba(255,255,255,.14);
+  border:1.5px solid rgba(255,255,255,.3);
+  border-radius:8px;
+  color:#fff;
+  font-family:'Nunito',sans-serif;
+  font-size:12.5px;font-weight:700;
+  padding:6px 30px 6px 11px;
+  cursor:pointer;outline:none;appearance:none;
+}
+.city-sel option{background:#196128;color:#fff;font-family:sans-serif;}
+.city-arrow{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  color:rgba(255,255,255,.7);font-size:11px;pointer-events:none;
+}
+
+/* date pills */
+.dates{display:flex;gap:7px;}
+.date-pill{
+  flex:1;
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:8px;
+  padding:5px 8px;text-align:center;
+}
+.date-pill .lbl{
+  color:rgba(255,255,255,.5);font-size:8.5px;
+  text-transform:uppercase;letter-spacing:.6px;font-weight:600;
+}
+.date-pill .val{
+  color:#fff;font-size:11px;font-weight:700;
+  margin-top:2px;line-height:1.2;
+}
+
+/* ─────────────────────────────────────────────
+   NEXT PRAYER BANNER
+───────────────────────────────────────────── */
+.next-bar{
+  background:linear-gradient(90deg,#e8f5e9,#f0faf1);
+  border-bottom:1.5px solid #b8deba;
+  padding:7px 14px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.next-lbl{
+  color:#196128;font-size:11.5px;font-weight:800;
+  display:flex;align-items:center;gap:5px;
+}
+.next-lbl::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:#196128;display:inline-block;
+  animation:pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1);}
+  50%{opacity:.4;transform:scale(.7);}
+}
+.next-cd{
+  color:#196128;font-size:14px;font-weight:800;
+  font-variant-numeric:tabular-nums;
+}
+
+/* ─────────────────────────────────────────────
+   PRAYER ROWS
+───────────────────────────────────────────── */
+.prayers{background:#fff;}
+
+.row{
+  display:flex;align-items:center;
+  padding:9px 14px;
+  border-bottom:1px solid #f0efe9;
+  transition:background .12s;
+}
+.row:last-child{border-bottom:none;}
+
+.row.active{
+  background:#edf7ee;
+  border-left:3.5px solid #196128;
+  padding-left:10.5px;
+}
+.row.passed{opacity:.38;}
+
+/* icon circle */
+.p-icon{
+  width:32px;height:32px;border-radius:50%;
+  background:#edf7ee;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;margin-right:11px;flex-shrink:0;
+  transition:background .12s;
+}
+.row.active .p-icon{background:#196128;}
+
+.p-names{flex:1;}
+.p-az{
+  font-weight:800;font-size:13.5px;color:#1a1a1a;
+  display:flex;align-items:center;gap:6px;
+  line-height:1.2;
+}
+.row.active .p-az{color:#196128;}
+
+.p-en{
+  font-size:9px;color:#aaa;
+  text-transform:uppercase;letter-spacing:.5px;
+  font-weight:600;margin-top:1px;
+}
+
+.next-pill{
+  background:#196128;color:#fff;
+  font-size:8.5px;padding:2px 7px;
+  border-radius:10px;font-weight:800;
+  font-family:'Nunito',sans-serif;
+}
+
+.p-time{
+  font-size:17px;font-weight:800;color:#1a1a1a;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.3px;
+}
+.row.active .p-time{color:#196128;}
+
+/* ─────────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────────── */
+.ftr{
+  background:#eeeee8;
+  border-top:1px solid #ddddd5;
+  padding:7px 14px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.ftr a{
+  color:#196128;text-decoration:none;
+  font-size:11px;font-weight:700;
+  display:flex;align-items:center;gap:4px;
+}
+.ftr a:hover{text-decoration:underline;}
+.ftr-refresh{
+  background:none;border:none;cursor:pointer;
+  color:#aaa;font-size:16px;padding:2px 4px;
+  border-radius:4px;transition:color .2s;line-height:1;
+  font-family:'Nunito',sans-serif;
+}
+.ftr-refresh:hover{color:#196128;}
+
+/* ─────────────────────────────────────────────
+   LOADING / ERROR
+───────────────────────────────────────────── */
+.state-box{
+  text-align:center;padding:32px 14px;color:#aaa;
+  font-weight:600;
+}
+.spinner{
+  width:24px;height:24px;
+  border:2.5px solid #e8e8e0;
+  border-top-color:#196128;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  margin:0 auto 10px;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.err-msg{color:#c0392b;font-size:12px;margin-top:5px;font-weight:700;}
+.err-sub{margin-top:4px;color:#ccc;font-size:10.5px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="brand">
+      <div class="icon-ring" id="icon-ring">
+        <img id="site-logo"
+             src="https://namazvaxtiaz.com/wp-content/uploads/2026/03/cropped-namaz-vaxti-logo.webp"
+             alt="logo"
+             onerror="this.style.display='none'; document.getElementById('fallback-svg').style.display='block'"/>
+        <svg id="fallback-svg" style="display:none" width="26" height="26" viewBox="0 0 26 26">
+          <rect width="26" height="26" rx="5" fill="#196128"/>
+          <circle cx="15" cy="13" r="8" fill="white" opacity=".92"/>
+          <circle cx="18.5" cy="13" r="6.2" fill="#196128"/>
+          <circle cx="9.5" cy="8.5" r="1.2" fill="white" opacity=".85"/>
+          <circle cx="7.8" cy="12" r=".75" fill="white" opacity=".6"/>
+        </svg>
+      </div>
+      <div class="brand-txt">
+        <div class="name">Namaz Vaxtı</div>
+        <div class="url">namazvaxtiaz.com</div>
+      </div>
+    </div>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+
+  <div class="city-wrap">
+    <select class="city-sel" id="city-sel">
+      <option value="Bakı|40.4093|49.8671">🏙 Bakı (Baku)</option>
+      <option value="Gəncə|40.6828|46.3606">🏙 Gəncə (Ganja)</option>
+      <option value="Lənkəran|38.7529|48.8530">🏙 Lənkəran (Lankaran)</option>
+      <option value="Naxçıvan|39.2090|45.4120">🏙 Naxçıvan (Nakhchivan)</option>
+      <option value="Şəki|41.1980|47.1706">🏙 Şəki (Sheki)</option>
+      <option value="Yevlax|40.6197|47.1497">🏙 Yevlax (Yevlakh)</option>
+      <option value="Sumqayıt|40.5893|49.6322">🏙 Sumqayıt (Sumqayit)</option>
+      <option value="Mingəçevir|40.7700|47.0478">🏙 Mingəçevir (Mingachevir)</option>
+      <option value="Xaçmaz|41.4590|48.8021">🏙 Xaçmaz (Khachmaz)</option>
+      <option value="Şirvan|39.9276|48.9200">🏙 Şirvan (Shirvan)</option>
+      <option value="Quba|41.3636|48.5128">🏙 Quba (Quba)</option>
+    </select>
+    <span class="city-arrow">▼</span>
+  </div>
+
+  <div class="dates">
+    <div class="date-pill">
+      <div class="lbl">Miladi</div>
+      <div class="val" id="greg">...</div>
+    </div>
+    <div class="date-pill">
+      <div class="lbl">Hicri</div>
+      <div class="val" id="hijri">...</div>
+    </div>
+  </div>
+</div>
+
+<!-- NEXT BAR -->
+<div class="next-bar" id="next-bar" style="display:none">
+  <span class="next-lbl" id="next-name">—</span>
+  <span class="next-cd" id="next-cd">--:--:--</span>
+</div>
+
+<!-- PRAYERS -->
+<div class="prayers" id="prayers">
+  <div class="state-box"><div class="spinner"></div>Yüklənir...</div>
+</div>
+
+<!-- FOOTER -->
+<div class="ftr">
+  <a href="https://namazvaxtiaz.com" target="_blank">🌐 namazvaxtiaz.com</a>
+  <button class="ftr-refresh" id="refresh" title="Yenilə">↻</button>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
